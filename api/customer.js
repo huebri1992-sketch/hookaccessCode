@@ -127,6 +127,10 @@ async function findMatchingCheckoutSession(accessCode, stripeSecretKey) {
 				stripeSecretKey,
 			);
 
+			if (subscription?.status === 'trialing') {
+				return true;
+			}
+
 			if (subscriptionIsEligible(subscription) && subscriptionHasTargetItem(subscription)) {
 				return true;
 			}
