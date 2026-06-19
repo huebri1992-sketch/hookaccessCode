@@ -25,6 +25,11 @@ async function stripeRequest(path, stripeSecretKey) {
 
 function getQueryCode(req) {
 	const url = new URL(req.url, 'http://localhost');
+	const rawQuery = url.search.startsWith('?') ? url.search.slice(1) : '';
+
+	if (rawQuery && !rawQuery.includes('=')) {
+		return decodeURIComponent(rawQuery.trim());
+	}
 
 	const direct = url.searchParams.get('code') || url.searchParams.get('customer');
 	if (direct) {
@@ -42,6 +47,8 @@ function getQueryCode(req) {
 }
 
 function extractAccessCode(session) {
+	let fallbackValue = '';
+
 	for (const field of session?.custom_fields || []) {
 		if (!field || field.type !== 'text' || !field.text) {
 			continue;
@@ -51,12 +58,20 @@ function extractAccessCode(session) {
 		const label = normalize(field.label?.custom);
 		const value = typeof field.text.value === 'string' ? field.text.value.trim() : '';
 
-		if (value && (ACCESS_CODE_KEYS.includes(key) || ACCESS_CODE_LABELS.includes(label))) {
+		if (!value) {
+			continue;
+		}
+
+		if (ACCESS_CODE_KEYS.includes(key) || ACCESS_CODE_LABELS.includes(label)) {
 			return value;
+		}
+
+		if (!fallbackValue) {
+			fallbackValue = value;
 		}
 	}
 
-	return '';
+	return fallbackValue;
 }
 
 function subscriptionIsEligible(subscription) {
@@ -86,6 +101,7 @@ async function findMatchingCheckoutSession(accessCode, stripeSecretKey) {
 
 		for (const session of data) {
 			if (!session.subscription) continue;
+			if (session.payment_status === 'unpaid') continue;
 
 			const sessionDetails = await stripeRequest(
 				`/checkout/sessions/${encodeURIComponent(session.id)}?expand[]=custom_fields`,
