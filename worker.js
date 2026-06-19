@@ -86,6 +86,12 @@ function subscriptionHasTargetItem(subscription) {
 	});
 }
 
+function setNoCacheHeaders(res) {
+	res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+	res.setHeader('Pragma', 'no-cache');
+	res.setHeader('Expires', '0');
+}
+
 async function findMatchingCheckoutSession(accessCode, stripeSecretKey) {
 	let startingAfter = null;
 
@@ -100,7 +106,6 @@ async function findMatchingCheckoutSession(accessCode, stripeSecretKey) {
 		const data = sessions?.data || [];
 
 		for (const session of data) {
-			if (session.payment_status === 'unpaid') continue;
 			if (!session.subscription) continue;
 
 			const sessionDetails = await stripeRequest(
@@ -139,6 +144,7 @@ export default async function handler(req, res) {
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+	setNoCacheHeaders(res);
 
 	if (req.method === 'OPTIONS') {
 		return res.status(200).end();
