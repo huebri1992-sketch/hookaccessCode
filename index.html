@@ -1,0 +1,117 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <title>API Console</title>
+  <style>
+    body {
+      background: #181818;
+      color: #e0e0e0;
+      font-family: monospace;
+      margin: 0;
+      padding: 0;
+    }
+    #console {
+      background: #222;
+      padding: 20px;
+      height: 90vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 15px;
+      border-bottom: 2px solid #444;
+    }
+    #inputBar {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: none;
+      background: #181818;
+      color: #e0e0e0;
+      font-size: 15px;
+      outline: none;
+      border-top: 2px solid #444;
+    }
+  </style>
+</head>
+<body>
+  <div id="console">
+<p style="color:#f4da6e; font-size:8px; line-height: 1;">                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                    @@@@@@@@@@@@@@@@                                                 
+              @@@@@@@@@@@@@@@@@@@@@@@@@@@                                            
+          @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                         
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                         
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        @@@@@@@@@@@@@@@@@@@              
+  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    @@@@@@@@@@@@@@@@@@@@@@@@@@@          
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@       
+ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ @@@@@   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
+  @@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@       @@@   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  
+   @@@@@@@@@@@          @@@@@@@@@          @@   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @@@@@@@@@             @@@@@@           @@@   @@@@@@@@   @@@@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@         @@@@@@ @@@@@@@@@@@@@@  @@   @@@@@@       @@@@@@@@@@@@@@@@@@@@@@ 
+      @@@@@    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  @@@@@         @@@@@@@@@@   @@@@@@@  
+       @@@@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  @@@@          @@@@@@@       @@@@@@  
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   @@@@@@@@@@@@@ @@@@@        @@@@@   
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   @@@@@@@@@@@@@@@@@@@@@       @@@    
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   @@@@@@@@@@@@@@@@@@@@@@@@@   @@@    
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   @@@@@@@@@@@@@@@@@@@@@@@@@@@ @@@    
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ @@@@   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
+        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  @@@@@   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
+        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    @@@@@   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     
+         @@@@@@@@@@@@@@@@@@@@@@@@        @@@@@@  @@@@@@@@@@@        @@@@@@@@@@@@     
+          @@@@@@@@@@@@@@@@               @@@@@@  @@@@@@@@             @@@@@@@@@      
+           @@@@@@                       @@@@@@   @@@@@@               @@@@@@@@       
+            @@@@@@@                    @@@@@@@   @@@@   @@@@@@@        @@@@@@        
+              @@@@@@@@               @@@@@@@@@  @@@@@@@@@@@@@@@@@@@    @@@@@         
+               @@@@@@@@@@@         @@@@@@@@@@   @@@@@@@@@@@@@@@@@@@@@  @@@@          
+                 @@@@@@@@@@@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@            
+                   @@@@@@@@@@@@@@@@@@@@@@@@@   @@@@@@@@@@@@@@@@@@@@@@@@@             
+                     @@@@@@@@@@@@@@@@@@@@@@    @@@@@@@@@@@@@@@@@@@@@@@               
+                       @@@@@@@@@@@@@@@@@@@@     @@@@@@@@@@@@@@@@@@@@                 
+                         @@@@@@@@@@@@@@@@@      @@@@@@@@@@@@@@@@@@                   
+                           @@@@@@@@@@@@@          @@@@@@@@@@@@@@                     
+                              @@@@@@@@               @@@@@@@                         
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                 </p>
+<span style="color:#b29421">API Console ready.
+Type an API path and press Enter.</span>
+</div>
+  <input id="inputBar" placeholder="Type a fetch, e.g. /api/check-premium?code=TEST123 and press Enter">
+  <script>
+    const consoleDiv = document.getElementById('console');
+    const inputBar = document.getElementById('inputBar');
+
+    function log(msg, type = 'info') {
+      const color = type === 'error' ? '#f4da6e' : '#8a7a3b';
+      consoleDiv.innerHTML += `<span style="color:${color}">${msg}</span>\n`;
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    }
+
+    inputBar.addEventListener('keydown', async (e) => {
+      if (e.key === 'Enter') {
+        const path = inputBar.value.trim();
+        if (!path) return;
+        log(`> fetch ${path}`);
+        try {
+          const res = await fetch(path);
+          const text = await res.text();
+          log(`< response (${res.status}):\n${text}\n`);
+        } catch (err) {
+          log(`< error: ${err.message}\n`, 'error');
+        }
+        inputBar.value = '';
+      }
+    });
+
+    log('API Console ready.\nType an API path and press Enter.');
+  </script>
+
+</body></html>
+
+
+
