@@ -31,9 +31,9 @@ export default async function handler(req, res) {
         // Only check sessions with a subscription
         if (!session.subscription) continue;
 
-        // Retrieve the subscription and check if it's active
+        // Retrieve the subscription and check if it's active or in trial
         const subscription = await stripe.subscriptions.retrieve(session.subscription);
-        if (subscription.status !== 'active') continue;
+        if (subscription.status !== 'active' && subscription.status !== 'trialing') continue;
 
         // Fetch session details to get custom fields
         const sessionDetails = await stripe.checkout.sessions.retrieve(session.id, {
