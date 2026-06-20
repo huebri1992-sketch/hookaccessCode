@@ -1,8 +1,0 @@
-{
-	"rewrites": [
-		{
-			"source": "/customer",
-			"destination": "/api/customer"
-		}
-	]
-}
